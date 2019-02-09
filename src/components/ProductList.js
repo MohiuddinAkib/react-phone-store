@@ -13,11 +13,7 @@ class ProductList extends Component {
   }
 
   eachProduct = products =>
-    products.map(product => (
-      <div className="col-md-4" key={product.id}>
-        <Product product={product} />
-      </div>
-    ));
+    products.map(product => <Product product={product} key={product.id} />);
 
   render() {
     return (
