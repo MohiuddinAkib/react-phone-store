@@ -1,13 +1,16 @@
-import React, { Component } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 
-class Product extends Component {
-  render() {
-    return (
-      <figure>
-        <h3>Hello from product</h3>
-      </figure>
-    );
-  }
-}
+const Product = ({ product }) => {
+  return (
+    <figure>
+      <figcaption>{product.title}</figcaption>
+    </figure>
+  );
+};
+
+Product.propTypes = {
+  product: PropTypes.object.isRequired
+};
 
 export default Product;

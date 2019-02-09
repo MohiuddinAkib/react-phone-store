@@ -1,16 +1,23 @@
 import React, { Component } from "react";
 import Product from "./Product";
 import Title from "./Title";
-import { storeProducts } from "../data";
+import { ProductConsumer } from "../context";
 
 class ProductList extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      products: storeProducts
+      products: []
     };
   }
+
+  eachProduct = products =>
+    products.map(product => (
+      <div className="col-md-4" key={product.id}>
+        <Product product={product} />
+      </div>
+    ));
 
   render() {
     return (
@@ -18,9 +25,9 @@ class ProductList extends Component {
         <div className="container">
           <Title name="our" title="products" />
           <div className="row">
-            <div className="col-md-4">
-              <Product />
-            </div>
+            <ProductConsumer>
+              {value => this.eachProduct(value.products)}
+            </ProductConsumer>
           </div>
         </div>
       </section>
