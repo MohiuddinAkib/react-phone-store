@@ -1,22 +1,28 @@
-import React, { Component } from "react";
-import logo from "./logo.svg";
+import React, { Component, Fragment } from "react";
+import { Route, Switch } from "react-router-dom";
 import "./App.css";
+import Navbar from "./components/Navbar";
+import ProductList from "./components/ProductList";
+import Details from "./components/Details";
+import Cart from "./components/Cart";
+import Default from "./components/Default";
 
 class App extends Component {
   render() {
     return (
-      <main>
-        <div className="container">
-          <div className="row">
-            <div className="col-md-6">Column number 1</div>
-            <div className="col-md-6">
-              <span>
-                <i className="fas fa-home" />
-              </span>
-            </div>
-          </div>
-        </div>
-      </main>
+      <Fragment>
+        <header>
+          <Navbar />
+        </header>
+        <main>
+          <Switch>
+            <Route exact path="/" component={ProductList} />
+            <Route exact path="/details" component={Details} />
+            <Route exact path="/cart" component={Cart} />
+            <Route component={Default} />
+          </Switch>
+        </main>
+      </Fragment>
     );
   }
 }
