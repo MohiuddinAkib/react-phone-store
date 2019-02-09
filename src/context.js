@@ -1,12 +1,25 @@
 import React, { Component, createContext } from "react";
-import { storeProducts as products, detailProduct } from "./data";
+import { storeProducts, detailProduct } from "./data";
 
 const ProductContext = createContext();
 
 class Productprovider extends Component {
   state = {
-    products,
+    products: [],
     detailProduct
+  };
+
+  componentDidMount = () => {
+    this.setProducts();
+  };
+
+  setProducts = () => {
+    let products = [];
+    storeProducts.forEach(item => {
+      const singleItem = { ...item };
+      products = [...products, singleItem];
+    });
+    this.setState(() => ({ products }));
   };
 
   handleDetail = () => console.log("Hello detail");
