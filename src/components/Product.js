@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { ProductConsumer } from "../context";
 
 /**
  * @description This will render the content
@@ -21,31 +22,43 @@ const btnContent = inCart =>
   );
 
 /**
+ * @description renders jsx element for card element
+ * @param {*} id
+ * @param {*} img
+ * @param {*} title
+ * @param {*} inCart
+ * @param {*} context
+ * @return jsx element
+ */
+const cardContent = (id, img, title, inCart, { handleDetail }) => (
+  <div className="img-container p-5" onClick={() => handleDetail(id)}>
+    <Link to="/details">
+      <img src={img} alt={title} className="card-img-top" />
+    </Link>
+    <button
+      className="cart-btn"
+      disabled={inCart}
+      onClick={() => console.log("added to the cart")}
+    >
+      {btnContent(inCart)}
+    </button>
+  </div>
+);
+
+/**
  * @description Product component
  * @param {*} properties
  * @return jsx elements
  */
-const Product = ({ product: { title, img, price, inCart } }) => {
+const Product = ({ product: { id, title, img, price, inCart } }) => {
   return (
     <ProductWrapper className="col-9 mx-auto col-md-6 col-lg-3 my-3">
       <figure className="card">
-        <div
-          className="img-container p-5"
-          onClick={() => {
-            console.log("You clicked me");
-          }}
-        >
-          <Link to="/details">
-            <img src={img} alt={title} className="card-img-top" />
-          </Link>
-          <button
-            className="cart-btn"
-            disabled={inCart}
-            onClick={() => console.log("added to the cart")}
-          >
-            {btnContent(inCart)}
-          </button>
-        </div>
+        {/* card content */}
+        <ProductConsumer>
+          {cardContent.bind(this, id, img, title, inCart)}
+        </ProductConsumer>
+        {/* end card content */}
         {/* Card footer */}
         <figcaption className="card-footer d-flex justify-content-between">
           <p className="align-self-center mb-0">{title}</p>
