@@ -45,7 +45,7 @@ class Productprovider extends PureComponent {
    *                  to context state to let the child component know
    *                  about the items in cart
    *
-   * @return void
+   * @return          void
    */
   setCartAndProductsAfterPageRefresh = () => {
     // Set the cart after page refresh
@@ -123,10 +123,11 @@ class Productprovider extends PureComponent {
    */
   addToCart = id => {
     const { tempProducts, product } = this.updateTheProductById(id);
+
     // update the state
     this.setState(
       prevState => ({
-        products: tempProducts,
+        products: [...tempProducts],
         cart: [...prevState.cart, product]
       }),
       () => this.storeCartToLocalStorageAndCountTotalPrice()
@@ -161,8 +162,7 @@ class Productprovider extends PureComponent {
     const product = tempProducts[index];
     product.inCart = true;
     product.count = 1;
-    const { price } = product;
-    product.total = price;
+    product.total = product.price;
     return { tempProducts, product };
   };
 
@@ -185,10 +185,45 @@ class Productprovider extends PureComponent {
   closeModal = () => this.setState(() => ({ modalOpen: false }));
 
   // Increases item quantity in the cart
-  increment = id => console.log("This is increment method");
+  increment = id => this.handleIncrementDecrement(id);
 
   // decreases item quantity in the cart
-  decrement = id => console.log("This is decrement method");
+  decrement = id => this.handleIncrementDecrement(id, "-");
+
+  /**
+   * @description   increases item by default but
+   *                a second arg can be passed to
+   *                decrease item from the cart
+   *                and update the state of this component
+   *
+   * @param         id, operator(optional)
+   * @return        void
+   */
+  handleIncrementDecrement = (id, operator = "") => {
+    const copiedCart = this.deepCopiedProducts(this.state.cart);
+    const product = copiedCart.find(item => item.id === id);
+    switch (operator) {
+      case "-":
+        product.count = product.count !== 0 ? product.count - 1 : product.count;
+        if (product.count === 0) {
+          return this.removeItem(id);
+        }
+        break;
+
+      default:
+        product.count = product.count + 1;
+        break;
+    }
+    product.total = product.count * product.price;
+
+    // update the state
+    this.setState(
+      () => ({
+        cart: [...copiedCart]
+      }),
+      () => this.storeCartToLocalStorageAndCountTotalPrice()
+    );
+  };
 
   // removes item from cart
   removeItem = id => {
@@ -196,17 +231,22 @@ class Productprovider extends PureComponent {
     const filteredCart = this.state.cart.filter(item => item.id !== id);
     const product = tempProducts.find(item => item.id === id);
     product.inCart = false;
+    product.count = 0;
+    product.total = 0;
 
-    this.setState({ cart: filteredCart, products: tempProducts }, () =>
-      this.storeCartToLocalStorageAndCountTotalPrice()
+    this.setState(
+      { cart: [...filteredCart], products: [...tempProducts] },
+      () => this.storeCartToLocalStorageAndCountTotalPrice()
     );
   };
 
   // clears the whole cart
-  clearCart = async () => {
+  clearCart = () => {
     localStorage.removeItem("cart");
-    await this.setProducts();
-    await this.addTotals();
+    this.setState({ cart: [] }, () => {
+      this.setProducts();
+      this.addTotals();
+    });
   };
 
   /**
