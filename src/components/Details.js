@@ -6,7 +6,8 @@ import { ButtonContainer } from "./Button";
 class Details extends Component {
   showDetail = ({
     detailProduct: { id, company, title, img, info, price, inCart },
-    addToCart
+    addToCart,
+    openModal
   }) => (
     <section>
       <div className="container">
@@ -48,7 +49,10 @@ class Details extends Component {
               <ButtonContainer
                 cart
                 disabled={inCart}
-                onClick={() => addToCart(id)}
+                onClick={() => {
+                  addToCart(id);
+                  openModal(id);
+                }}
               >
                 {inCart ? "in cart" : "add to cart"}
               </ButtonContainer>

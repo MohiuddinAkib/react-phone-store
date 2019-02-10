@@ -30,7 +30,13 @@ const btnContent = inCart =>
  * @param {*} context
  * @return jsx element
  */
-const cardContent = (id, img, title, inCart, { handleDetail, addToCart }) => (
+const cardContent = (
+  id,
+  img,
+  title,
+  inCart,
+  { handleDetail, addToCart, openModal }
+) => (
   <div className="img-container p-5" onClick={() => handleDetail(id)}>
     <Link to="/details">
       <img src={img} alt={title} className="card-img-top" />
@@ -38,7 +44,10 @@ const cardContent = (id, img, title, inCart, { handleDetail, addToCart }) => (
     <button
       className="cart-btn"
       disabled={inCart}
-      onClick={() => addToCart(id)}
+      onClick={() => {
+        addToCart(id);
+        openModal(id);
+      }}
     >
       {btnContent(inCart)}
     </button>

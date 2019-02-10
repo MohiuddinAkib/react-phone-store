@@ -10,7 +10,9 @@ class Productprovider extends PureComponent {
   state = {
     products: [],
     detailProduct,
-    cart: []
+    cart: [],
+    modalOpen: false,
+    modalProduct: detailProduct
   };
 
   componentDidMount = () => {
@@ -72,7 +74,7 @@ class Productprovider extends PureComponent {
   };
 
   /**
-   * @description   Deeply copy the products state
+   * @description   Deeply copy the products array passed as arg
    *
    * @param         array (list of products)
    * @return        copied state products
@@ -125,7 +127,7 @@ class Productprovider extends PureComponent {
   };
 
   /**
-   * @description   Get a copy of products context state
+   * @description   Get a copy of products context state and then
    *                from that list get a product based on the id and then
    *                change the inCart property value as it was added to the cart
    *
@@ -146,13 +148,33 @@ class Productprovider extends PureComponent {
     return { tempProducts, product };
   };
 
+  /**
+   * @description   opens product modal to show
+   *                product details
+   *
+   * @return        void
+   */
+  openModal = id => {
+    const product = this.getItem(id);
+    this.setState(() => ({ modalProduct: product, modalOpen: true }));
+  };
+
+  /**
+   * @description   closes product modal
+   *
+   * @return        void
+   */
+  closeModal = () => this.setState(() => ({ modalOpen: false }));
+
   render() {
     return (
       <ProductContext.Provider
         value={{
           ...this.state,
           handleDetail: this.handleDetail,
-          addToCart: this.addToCart
+          addToCart: this.addToCart,
+          openModal: this.openModal,
+          closeModal: this.closeModal
         }}
       >
         {this.props.children}
