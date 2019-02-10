@@ -12,7 +12,10 @@ class Productprovider extends PureComponent {
     detailProduct,
     cart: [],
     modalOpen: false,
-    modalProduct: detailProduct
+    modalProduct: detailProduct,
+    cartSubTotal: 0,
+    cartTax: 0,
+    cartTotal: 0
   };
 
   componentDidMount = () => {
@@ -166,6 +169,14 @@ class Productprovider extends PureComponent {
    */
   closeModal = () => this.setState(() => ({ modalOpen: false }));
 
+  increment = id => console.log("This is increment method");
+
+  decrement = id => console.log("This is decrement method");
+
+  removeItem = id => console.log("This is remove item method");
+
+  clearCart = () => console.log("Cart was cleared");
+
   render() {
     return (
       <ProductContext.Provider
@@ -174,7 +185,11 @@ class Productprovider extends PureComponent {
           handleDetail: this.handleDetail,
           addToCart: this.addToCart,
           openModal: this.openModal,
-          closeModal: this.closeModal
+          closeModal: this.closeModal,
+          increment: this.increment,
+          decrement: this.decrement,
+          removeItem: this.removeItem,
+          clearCart: this.clearCart
         }}
       >
         {this.props.children}

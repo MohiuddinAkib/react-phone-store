@@ -81,16 +81,22 @@ const Product = ({ product: { id, title, img, price, inCart } }) => {
   );
 };
 
+// Typechecking for property passed into this component
 Product.propTypes = {
   product: PropTypes.shape({
     id: PropTypes.number.isRequired,
     img: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     price: PropTypes.number.isRequired,
-    inCart: PropTypes.bool.isRequired
+    total: PropTypes.number.isRequired,
+    count: PropTypes.number.isRequired,
+    inCart: PropTypes.bool.isRequired,
+    company: PropTypes.string.isRequired,
+    info: PropTypes.string.isRequired
   }).isRequired
 };
 
+// Styled component
 const ProductWrapper = styled.div`
   .card {
     border-color: transparent;

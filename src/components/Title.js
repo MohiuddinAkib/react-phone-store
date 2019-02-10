@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 const Title = ({ name, title }) => {
   return (
@@ -10,6 +11,11 @@ const Title = ({ name, title }) => {
       </div>
     </section>
   );
+};
+
+Title.propTypes = {
+  name: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired
 };
 
 export default Title;
