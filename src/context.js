@@ -29,7 +29,7 @@ class Productprovider extends PureComponent {
    * @return        void
    */
   setProducts = () => {
-    let products = this.deepCopiedProducts(storeProducts);
+    const products = this.deepCopiedProducts(storeProducts);
 
     // Update the state to change the products
     this.setState(
@@ -55,6 +55,8 @@ class Productprovider extends PureComponent {
         () => ({ cart }),
         () => this.checkProductOfProductsInCartAfterPageRefresh()
       );
+    } else {
+      this.setState({ cart: [] });
     }
   };
 
@@ -66,14 +68,16 @@ class Productprovider extends PureComponent {
    */
   checkProductOfProductsInCartAfterPageRefresh = () => {
     // Deep copy the state products
-    let tempProducts = this.deepCopiedProducts(this.state.products);
+    const products = this.deepCopiedProducts(this.state.products);
     // Look for the items in the cart
     cart.forEach(item => {
-      const index = tempProducts.findIndex(product => product.id === item.id);
-      tempProducts[index].inCart = true;
+      const index = products.findIndex(product => product.id === item.id);
+      products[index].inCart = true;
     });
     // Now update the state products in this component
-    this.setState(() => ({ products: tempProducts }));
+    this.setState(() => ({ products: products }));
+    // Sums up the cart total price even after refreshing the page
+    this.addTotals();
   };
 
   /**
@@ -113,7 +117,7 @@ class Productprovider extends PureComponent {
     this.setState(() => ({ detailProduct: this.getItem(id) }));
 
   /**
-   * @description   Adds an item to the cart
+   * @description   Adds an item to the cart and store it to localstorage
    *
    * @return        void
    */
@@ -125,8 +129,19 @@ class Productprovider extends PureComponent {
         products: tempProducts,
         cart: [...prevState.cart, product]
       }),
-      () => localStorage.setItem("cart", JSON.stringify(this.state.cart))
+      () => this.storeCartToLocalStorageAndCountTotalPrice()
     );
+  };
+
+  /**
+   * @description   handles the functionality to store cart to localstorage
+   *                and call addTotal to sum up total price
+   *
+   * @return        void
+   */
+  storeCartToLocalStorageAndCountTotalPrice = () => {
+    localStorage.setItem("cart", JSON.stringify(this.state.cart));
+    this.addTotals();
   };
 
   /**
@@ -169,13 +184,47 @@ class Productprovider extends PureComponent {
    */
   closeModal = () => this.setState(() => ({ modalOpen: false }));
 
+  // Increases item quantity in the cart
   increment = id => console.log("This is increment method");
 
+  // decreases item quantity in the cart
   decrement = id => console.log("This is decrement method");
 
-  removeItem = id => console.log("This is remove item method");
+  // removes item from cart
+  removeItem = id => {
+    const tempProducts = this.deepCopiedProducts(this.state.products);
+    const filteredCart = this.state.cart.filter(item => item.id !== id);
+    const product = tempProducts.find(item => item.id === id);
+    product.inCart = false;
 
-  clearCart = () => console.log("Cart was cleared");
+    this.setState({ cart: filteredCart, products: tempProducts }, () =>
+      this.storeCartToLocalStorageAndCountTotalPrice()
+    );
+  };
+
+  // clears the whole cart
+  clearCart = async () => {
+    localStorage.removeItem("cart");
+    await this.setProducts();
+    await this.addTotals();
+  };
+
+  /**
+   * @description   Sums up cart subtotal, total and tax
+   *                and updates the state
+   *
+   * @return        void
+   */
+  addTotals = () => {
+    const cartSubTotal = this.state.cart.reduce(
+      (acc, curr) => acc + curr.total,
+      0
+    );
+    const tempTax = cartSubTotal * process.env.REACT_APP_TAX;
+    const cartTax = parseFloat(tempTax.toFixed(2));
+    const cartTotal = cartSubTotal + cartTax;
+    this.setState({ cartSubTotal, cartTax, cartTotal });
+  };
 
   render() {
     return (

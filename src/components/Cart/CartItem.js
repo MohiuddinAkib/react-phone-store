@@ -53,8 +53,8 @@ const CartItem = ({
         </div>
       </div>
       {/* product total */}
-      <div className="col-10 mx-auto col-lg-2">
-        <span>item total : {process.env.REACT_APP_CURRENCY}</span> {total}
+      <div className="col-10 mx-auto col-lg-2 font-weight-bold">
+        <span>item total : {process.env.REACT_APP_CURRENCY} </span> {total}
       </div>
     </div>
   );

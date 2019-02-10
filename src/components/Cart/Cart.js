@@ -4,13 +4,23 @@ import CartColumns from "./CartColumns";
 import EmptyCart from "./EmptyCart";
 import { ProductConsumer } from "../../context";
 import CartList from "./CartList";
+import CartTotals from "./CartTotals";
 
 class Cart extends Component {
   render() {
     return (
       <section>
         <ProductConsumer>
-          {({ cart, increment, decrement, removeItem }) =>
+          {({
+            cart,
+            increment,
+            decrement,
+            removeItem,
+            cartTotal,
+            cartTax,
+            cartSubTotal,
+            clearCart
+          }) =>
             cart.length > 0 ? (
               <Fragment>
                 <div className="container">
@@ -18,6 +28,9 @@ class Cart extends Component {
                 </div>
                 <CartColumns />
                 <CartList value={{ cart, increment, decrement, removeItem }} />
+                <CartTotals
+                  value={{ cartTotal, cartTax, cartSubTotal, clearCart }}
+                />
               </Fragment>
             ) : (
               <EmptyCart />
